@@ -253,11 +253,70 @@
     free ( head );
     head = head->next 
     }*/
-void removeHead ( ListElement **head ) {
-    ListElement *temp;
-    if ( head && * head ) {
-        temp = (*head)->next;
-        free ( *head );
-        *head = temp;
+// void removeHead ( ListElement **head ) {
+//     ListElement *temp;
+//     if ( head && * head ) {
+//         temp = (*head)->next;
+//         free ( *head );
+//         *head = temp;
+//     }
+// }
+
+// Mth to Last Element of a Linked List
+// ListElement *findMtoLastElement( ListElement *head, int m ) {
+//     ListElement *current, *mBehind;
+//     int i;
+//     if ( !head ) return NULL;
+//     /* Advance current m elements from beginning,
+//     * checking for the end of the list */
+//     current = head;
+//     for ( i = 0; i < m; i++ ) {
+//         if ( current->next ) {
+//             current = current->next;
+//         } else {
+//             return NULL;
+//         }
+//     }
+//     /* Start mBehind at beginning and advance pointers
+//     * together until current hits last element */
+//     mBehind = head;
+//     while ( current->next ) {
+//         current = current->next;
+//         mBehind = mBehind->next;
+//     }
+
+//     /* mBehind now points to the elemnt we were
+//     * searching for, so return it */
+//     return mBehind;
+// }
+
+// List Flattening
+void flattenList(Node* head, Node** tail) {
+    Node* curNode = head;
+    while (curNode) {
+        /* The current node has a child */
+        if (curNode->child) {
+            append(curNode->child, tail);
+        }
+        curNode = curNode->next;
     }
 }
+
+/* Appends the child list to the end of the tail and updates the tail */
+void append(Node* child, Node** tail) {
+    Node* curNode;
+
+    /* Append the child list to the end */
+    (*tail)->next = child;
+    child->prev = *tail;
+
+    /* Find the new tail, which is the end of the child list */
+    for (curNode = child; curNode->next; curNode = curNode->next)
+        ; /* Body intentionally empty */
+
+    /* Update the tail pointer now that curNode is the new tail */
+    *tail = curNode;
+}
+
+// List Unflattening
+
