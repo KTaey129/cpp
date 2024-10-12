@@ -83,15 +83,181 @@
 // }
 
 // traversing a list
-ListElement<int>* find(ListElement<int>* head, int data) {
-    ListElement<int>* elem = head;  // Start traversal from the head
+// ListElement<int>* find(ListElement<int>* head, int data) {
+//     ListElement<int>* elem = head;  // Start traversal from the head
 
-    // Traverse until you either find the data or reach the end of the list
-    while (elem != nullptr && elem->value() != data) {
-        elem = elem->getNext();  // Move to the next element in the list
+//     // Traverse until you either find the data or reach the end of the list
+//     while (elem != nullptr && elem->value() != data) {
+//         elem = elem->getNext();  // Move to the next element in the list
+//     }
+
+//     return elem;  // Return the element if found, otherwise return nullptr
+// }
+
+// // Inserting and Deleting Elements
+// bool deleteElement(IntElement** head, IntElement* deleteMe) {
+//     IntElement* elem;
+
+//     // 1. Check for null pointers to ensure the list and the element to delete are valid
+//     if (!head || !*head || !deleteMe) {
+//         return false;
+//     }
+
+//     elem = *head;
+
+//     // 2. Special case: if the element to delete is the head of the list
+//     if (deleteMe == *head) {
+//         *head = elem->next;  
+//         // Update the head to the next element
+//         delete deleteMe;      
+//         // Use 'delete' in C++ instead of 'free'
+//         return true;
+//     }
+
+//     // 3. Traverse the list to find the element preceding the one to be deleted
+//     while (elem) {
+//         if (elem->next == deleteMe) {
+//             elem->next = deleteMe->next;  
+//             // Bypass the element to delete
+//             delete deleteMe;              
+//             // Use 'delete' to free the memory
+//             return true;
+//         }
+//         elem = elem->next;
+//     }
+
+//     // 4. If the element to delete is not found
+//     return false;
+// }
+
+// void deleteList (IntElment **head) {
+//     IntElement *deleteMe = *head;
+
+//     while ( deleteMe)
+//     {
+//         IntElement *next = deleteMe->next;
+//         delete deleteMe;
+//         deleteMe = next;
+//     }
+
+//     *head = NULL;
+    
+// }
+
+// Stack Implemetation
+// class Stack {
+//     public:
+//         Stack() : head ( NULL ) {};
+//         ~Stack() {};
+//         void push( void *data );
+//         void *pop();
+//     protected:
+//         class Element {
+//             public:
+//                 Element ( Element *n, void *d ): next(n), data(d) {}
+//                 Element *getNext() const { return next; }
+//                 void *value const { return data; }
+//             private:
+//                 Element *next;
+//                 void *data;
+//         };
+//         Element *head;
+// };
+
+// Stack::~Stack() {
+//     while( head ) {
+//         Element *next = head->getNext();
+//         delete head;
+//         head = next;
+
+//     }
+// }
+// void Stack::push( void *data ) {
+//     //Allocation erorr will throw exception
+//     Element *element = new Element( head, data );
+//     head = element;
+// }
+// void *Stack::pop() {
+//     Element *popElement = head;
+//     void *data;
+//     /* Assume StackError exception calss is defined elsewhere */
+//     if (head == NULL) 
+//         throw StackError( E_EMPTY );
+    
+//     data = head->value();
+//     head = head->getNext();
+//     delete popElement;
+//     return data;
+// }
+
+//Maintain Linked List Tail Pointer
+// bool delete(Element *elem) {
+//     Element *curPos = head;
+
+//     if ( !elem ) return false;
+//     if (elem == head ) {
+//         head = elem->next;
+//         free (elem);
+
+//         /*special case for 1 element list */
+//         if ( !head ) tail = NULL;
+//         return true;
+
+//     }
+//     while ( curPos ) {
+//         if ( curPos->next == elem ) {
+//             curPos->next = elem->next;
+//             free (elem);
+//             if ( !curPos->next == NULL ) tail = curPos;
+//             return true;
+
+//         }
+//         curPos = curPos->next;
+//     }
+//     return false;
+// }
+
+// bool insertAfter( Element *elem, int data ) {
+//     Element *newElem, *curPos = head;
+
+//     newElem = malloc( sizeof(Element) );
+//     if ( !newElem ) return false;
+//     newElem->data = data;
+
+//     /* Insert at beginning of list */
+//     if ( !elem ) {
+//         newElem->next = head;
+//         head = newElem;
+//         /* Special case for empty list */
+//         if ( !tail ) tail = newElem;
+//         return true;
+//     }
+
+//     while ( curPos ) {
+//         if ( curPos == elem ) {
+//             newElem->next = curPos->next;
+//             curPos->next = newElem;
+//             /* Special case for inserting at the end of the list */
+//             if ( !newElem->next ) tail = newElem;
+//             return true;
+//         }
+//         curPos = curPos->next;
+//     }
+//     /* Insert position not found; free element and return failure */
+//     free (newElem);
+//     return false;
+// }
+
+// Bugs in removeHead
+/* void removeHead ( ListElement *head ) {
+    free ( head );
+    head = head->next 
+    }*/
+void removeHead ( ListElement **head ) {
+    ListElement *temp;
+    if ( head && * head ) {
+        temp = (*head)->next;
+        free ( *head );
+        *head = temp;
     }
-
-    return elem;  // Return the element if found, otherwise return nullptr
 }
-
-
