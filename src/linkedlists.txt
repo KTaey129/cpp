@@ -1952,14 +1952,17 @@ This is a recursive function that actually performs the separation of the flatte
 
 Parameters:
 
-Node *childListStart: The node where the function starts separating the child lists. Initially, this will be the start node, but it will later be called recursively on child nodes.
+Node *childListStart: The node where the function starts separating the child lists. 
+Initially, this will be the start node, but it will later be called recursively on child nodes.
 Process:
 
 The function starts at childListStart, and for each node (curNode), it checks if it has a child.
 If a child is found, it breaks the link between the main list and the child list:
-curNode->child->prev->next = NULL;: This breaks the link between the child list and its previous node in the main list by setting the next pointer of the previous node to NULL.
+curNode->child->prev->next = NULL;: This breaks the link between the child list and its previous node 
+in the main list by setting the next pointer of the previous node to NULL.
 curNode->child->prev = NULL;: This breaks the reverse link, detaching the child list from the main list.
-After separating the child list, the function calls itself recursively on the child list (exploreAndSeparate(curNode->child)), ensuring the child list itself is properly separated if it has further nested child lists.
+After separating the child list, the function calls itself recursively on the child list 
+(exploreAndSeparate(curNode->child)), ensuring the child list itself is properly separated if it has further nested child lists.
 Then, it moves to the next node in the main list (curNode = curNode->next).
 Key Concept: Recursion is used here to handle lists that have multiple levels of nested child lists. Each level is processed separately.
 
@@ -1986,7 +1989,8 @@ cpp
 코드 복사
     *tail = curNode;
 }
-Once the loop finishes, curNode will point to the last node (tail of the list). We update the tail to this node using *tail = curNode;.
+Once the loop finishes, curNode will point to the last node (tail of the list). 
+We update the tail to this node using *tail = curNode;.
 Line-by-Line for exploreAndSeparate
 cpp
 코드 복사
@@ -1996,7 +2000,8 @@ Node *curNode: This pointer starts at childListStart and will be used to travers
 cpp
 코드 복사
     while (curNode) {
-A while loop is used to traverse the list, node by node, starting from childListStart until it reaches the end of the list (curNode == NULL).
+A while loop is used to traverse the list, node by node, starting from childListStart 
+until it reaches the end of the list (curNode == NULL).
 cpp
 코드 복사
         if (curNode->child) {
@@ -2008,12 +2013,14 @@ cpp
                 curNode->child->prev = NULL;       // Detach from the parent list
             }
 This block ensures that the child list is separated from the main list:
-curNode->child->prev->next = NULL;: This breaks the link between the parent list and the child list by setting the next pointer of the node before the child to NULL.
+curNode->child->prev->next = NULL;: This breaks the link between the parent list and the child list 
+by setting the next pointer of the node before the child to NULL.
 curNode->child->prev = NULL;: This detaches the child list from its parent by setting its prev pointer to NULL.
 cpp
 코드 복사
             exploreAndSeparate(curNode->child);
-After separating the child list, the function calls itself recursively on the child list (curNode->child) to continue separating any nested child lists.
+After separating the child list, the function calls itself recursively on the child list 
+(curNode->child) to continue separating any nested child lists.
 cpp
 코드 복사
         curNode = curNode->next;
@@ -2023,3 +2030,97 @@ The loop moves the curNode pointer to the next node and continues until the enti
 Summary:
 unflattenList: Starts the unflattening process and updates the tail pointer.
 exploreAndSeparate: Recursively explores each node, separating child lists from the main list.
+
+1-15 Null or Cycle
+Concept
+The function determineTermination() is designed to detect whether a linked list has a cycle or 
+if it ends with a NULL. It uses the Tortoise and Hare algorithm, also known as Floyd's Cycle Detection Algorithm.
+
+Fast Pointer (Hare) moves two steps at a time.
+Slow Pointer (Tortoise) moves one step at a time.
+If there's a cycle, these two pointers will eventually meet.
+If the fast pointer reaches NULL, the list is NULL-terminated (no cycle).
+Full Code:
+cpp
+코드 복사
+// Takes a pointer to the head of the linked list and determines if 
+// the list ends in a cycle or is NULL terminated 
+bool determineTermination(Node *head) {
+    Node *fast, *slow;
+    slow = head;
+    fast = head->next;
+
+    while (true) {
+        if (!fast || !fast->next) return false;
+        else if (fast == slow || fast->next == slow) return true;
+        else {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+    }
+}
+Step-by-Step Explanation
+1. Function Declaration and Parameters
+cpp
+코드 복사
+bool determineTermination(Node *head)
+The function determineTermination takes a single parameter head, which is a pointer to the first node of the linked list.
+Return type: bool, which returns true if the list has a cycle, and false if it's NULL-terminated.
+2. Initialize Fast and Slow Pointers
+cpp
+코드 복사
+Node *fast, *slow;
+slow = head;
+fast = head->next;
+slow = head;: The slow pointer is initialized to the head of the list (i.e., it starts at the first node).
+
+fast = head->next;: The fast pointer is initialized to the second node (i.e., one step ahead of the slow pointer).
+
+This setup is crucial because the fast pointer needs to move faster (2 steps) than the slow pointer (1 step) to detect a cycle.
+
+3. Start of the Infinite Loop
+cpp
+코드 복사
+while (true) {
+An infinite while loop is used because either the fast pointer will reach NULL (list is NULL-terminated) or the fast and slow pointers will meet (indicating a cycle). We need to check both cases within the loop.
+4. Check if the List is NULL-terminated
+cpp
+코드 복사
+if (!fast || !fast->next) return false;
+The first condition checks if the fast pointer has reached NULL or if the fast pointer's next node is NULL. 
+If either of these is true, the list ends with NULL, meaning there's no cycle. 
+In this case, the function returns false.
+5. Check if Fast and Slow Pointers Meet (Cycle Detected)
+cpp
+코드 복사
+else if (fast == slow || fast->next == slow) return true;
+The second condition checks if the fast pointer has caught up with the slow pointer:
+fast == slow: This checks if both pointers are at the same node, indicating that the list has a cycle.
+fast->next == slow: This checks if the fast pointer is one step ahead of the slow pointer, which also indicates a cycle.
+If either of these conditions is true, the function returns true, meaning a cycle was detected.
+6. Move Fast and Slow Pointers
+cpp
+코드 복사
+else {
+    slow = slow->next;
+    fast = fast->next->next;
+}
+If neither of the previous conditions is true, the loop continues, and both pointers are moved forward:
+slow = slow->next;: The slow pointer moves one step ahead.
+fast = fast->next->next;: The fast pointer moves two steps ahead.
+How It Works:
+No Cycle (NULL-terminated): The fast pointer will eventually reach the end of the list (NULL), 
+at which point the function returns false.
+Cycle Detected: If there's a cycle in the list, the fast pointer will eventually "lap" the slow pointer, 
+and they will meet at some point, causing the function to return true.
+Example
+NULL-terminated list:
+
+If the list looks like: 1 -> 2 -> 3 -> 4 -> NULL, the fast pointer will eventually hit NULL, and the function will return false.
+Cycle in the list:
+
+If the list looks like: 1 -> 2 -> 3 -> 4 -> 2 (cycle back), the fast pointer will eventually meet the slow pointer, and the function will return true.
+Summary:
+This code detects if a linked list is NULL-terminated or has a cycle using the fast/slow pointer technique.
+It continuously moves the fast pointer two steps and the slow pointer one step. 
+If they meet, there's a cycle. If the fast pointer reaches NULL, the list is NULL-terminated.

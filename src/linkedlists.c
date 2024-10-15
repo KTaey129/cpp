@@ -291,63 +291,81 @@
 // }
 
 // List Flattening
-void flattenList(Node* head, Node** tail) {
-    Node* curNode = head;
-    while (curNode) {
-        /* The current node has a child */
-        if (curNode->child) {
-            append(curNode->child, tail);
-        }
-        curNode = curNode->next;
-    }
-}
+// void flattenList(Node* head, Node** tail) {
+//     Node* curNode = head;
+//     while (curNode) {
+//         /* The current node has a child */
+//         if (curNode->child) {
+//             append(curNode->child, tail);
+//         }
+//         curNode = curNode->next;
+//     }
+// }
 
-/* Appends the child list to the end of the tail and updates the tail */
-void append(Node* child, Node** tail) {
-    Node* curNode;
+// /* Appends the child list to the end of the tail and updates the tail */
+// void append(Node* child, Node** tail) {
+//     Node* curNode;
 
-    /* Append the child list to the end */
-    (*tail)->next = child;
-    child->prev = *tail;
+//     /* Append the child list to the end */
+//     (*tail)->next = child;
+//     child->prev = *tail;
 
-    /* Find the new tail, which is the end of the child list */
-    for (curNode = child; curNode->next; curNode = curNode->next)
-        ; /* Body intentionally empty */
+//     /* Find the new tail, which is the end of the child list */
+//     for (curNode = child; curNode->next; curNode = curNode->next)
+//         ; /* Body intentionally empty */
 
-    /* Update the tail pointer now that curNode is the new tail */
-    *tail = curNode;
-}
+//     /* Update the tail pointer now that curNode is the new tail */
+//     *tail = curNode;
+// }
 
-// List Unflattening
-// Function to unflatten the list
-void unflattenList(Node *start, Node **tail) {
-    Node *curNode;
+// // List Unflattening
+// // Function to unflatten the list
+// void unflattenList(Node *start, Node **tail) {
+//     Node *curNode;
 
-    // Explore and separate the child lists recursively
-    exploreAndSeparate(start);
+//     // Explore and separate the child lists recursively
+//     exploreAndSeparate(start);
 
-    // Update the tail pointer
-    for (curNode = start; curNode->next; curNode = curNode->next)
-        ; // Move to the end of the list
+//     // Update the tail pointer
+//     for (curNode = start; curNode->next; curNode = curNode->next)
+//         ; // Move to the end of the list
     
-    *tail = curNode;
-}
+//     *tail = curNode;
+// }
 
-// Recursive function to explore and separate child lists
-void exploreAndSeparate(Node *childListStart) {
-    Node *curNode = childListStart;
+// // Recursive function to explore and separate child lists
+// void exploreAndSeparate(Node *childListStart) {
+//     Node *curNode = childListStart;
 
-    while (curNode) {
-        if (curNode->child) {
-            // Separate the child list from the main list
-            if (curNode->child->prev) {
-                curNode->child->prev->next = NULL; // Break the link
-                curNode->child->prev = NULL;       // Detach from the parent list
-            }
+//     while (curNode) {
+//         if (curNode->child) {
+//             // Separate the child list from the main list
+//             if (curNode->child->prev) {
+//                 curNode->child->prev->next = NULL; // Break the link
+//                 curNode->child->prev = NULL;       // Detach from the parent list
+//             }
 
-            // Recursively explore and separate the child list
-            exploreAndSeparate(curNode->child);
+//             // Recursively explore and separate the child list
+//             exploreAndSeparate(curNode->child);
+//         }
+//         curNode = curNode->next; // Move to the next node
+//     }
+// }
+
+//Null or Cycle
+/* Takes a pointer to the head of teh linked list and determines if 
+ * the list ends in a cycle or is NULL terminated 
+ */
+bool dertermindTermination( Node *head ) {
+    Node *fast, *slow;
+    slow = head;
+    fast = head->next;
+    while ( true ) {
+        if ( !fast || !fast->next ) return false;
+        else if ( fast == slow || fast->next == slow ) return true;
+        else {
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        curNode = curNode->next; // Move to the next node
     }
 }
