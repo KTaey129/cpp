@@ -23,10 +23,17 @@
 		"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 	},
 	// Visual Studio Code extensions (plugins) to be installed.
-	"extensions": [
-		"ms-vscode.cpptools",
-		"ms-vscode.cmake-tools"
-	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools",
+				"GitHub.copilot"
+				
+
+			]
+		}
+	},
 	// Command to be executed after the container is created.
 	"postCreateCommand": ".devcontainer/post-create.sh"
 }

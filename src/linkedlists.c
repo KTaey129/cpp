@@ -319,4 +319,35 @@ void append(Node* child, Node** tail) {
 }
 
 // List Unflattening
+// Function to unflatten the list
+void unflattenList(Node *start, Node **tail) {
+    Node *curNode;
 
+    // Explore and separate the child lists recursively
+    exploreAndSeparate(start);
+
+    // Update the tail pointer
+    for (curNode = start; curNode->next; curNode = curNode->next)
+        ; // Move to the end of the list
+    
+    *tail = curNode;
+}
+
+// Recursive function to explore and separate child lists
+void exploreAndSeparate(Node *childListStart) {
+    Node *curNode = childListStart;
+
+    while (curNode) {
+        if (curNode->child) {
+            // Separate the child list from the main list
+            if (curNode->child->prev) {
+                curNode->child->prev->next = NULL; // Break the link
+                curNode->child->prev = NULL;       // Detach from the parent list
+            }
+
+            // Recursively explore and separate the child list
+            exploreAndSeparate(curNode->child);
+        }
+        curNode = curNode->next; // Move to the next node
+    }
+}

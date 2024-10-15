@@ -1890,4 +1890,136 @@ By breaking down the code into smaller parts and understanding each component, y
 Feel free to ask more questions if you need further clarification on any part of the code!
 
 1-14 List Unflattening
+Concept
+The list we are dealing with is a doubly linked list where each node can have its own "child" list. 
+The list has been "flattened," meaning all nodes, including the child nodes, are arranged in a single level. 
+The goal is to "unflatten" the list by separating the child lists back to their original structure. 
+This process is done recursively.
 
+Here’s the full code with comments, followed by a detailed breakdown:
+
+cpp
+코드 복사
+// Function to unflatten the list
+void unflattenList(Node *start, Node **tail) {
+    Node *curNode;
+
+    // Explore and separate the child lists recursively
+    exploreAndSeparate(start);
+
+    // Update the tail pointer
+    for (curNode = start; curNode->next; curNode = curNode->next)
+        ; // Move to the end of the list
+    
+    *tail = curNode;
+}
+
+// Recursive function to explore and separate child lists
+void exploreAndSeparate(Node *childListStart) {
+    Node *curNode = childListStart;
+
+    while (curNode) {
+        if (curNode->child) {
+            // Separate the child list from the main list
+            if (curNode->child->prev) {
+                curNode->child->prev->next = NULL; // Break the link
+                curNode->child->prev = NULL;       // Detach from the parent list
+            }
+
+            // Recursively explore and separate the child list
+            exploreAndSeparate(curNode->child);
+        }
+        curNode = curNode->next; // Move to the next node
+    }
+}
+Step-by-Step Breakdown
+1. unflattenList(Node *start, Node **tail)
+This is the main function responsible for unflattening the list and updating the tail pointer to the end of the list.
+
+Parameters:
+
+Node *start: The starting node of the list, usually the head of the list.
+Node **tail: A pointer to the tail node of the list. This will be updated by the function after unflattening.
+Process:
+
+First, it calls exploreAndSeparate(start) to recursively explore the list and separate any child lists.
+Then, it updates the tail pointer. The for loop starts at the beginning of the list (start) and 
+moves to the last node by following the next pointers.
+Key Concept: The double pointer (Node **tail) allows the function to modify the original tail in the calling code.
+
+2. exploreAndSeparate(Node *childListStart)
+This is a recursive function that actually performs the separation of the flattened child lists from the main list.
+
+Parameters:
+
+Node *childListStart: The node where the function starts separating the child lists. Initially, this will be the start node, but it will later be called recursively on child nodes.
+Process:
+
+The function starts at childListStart, and for each node (curNode), it checks if it has a child.
+If a child is found, it breaks the link between the main list and the child list:
+curNode->child->prev->next = NULL;: This breaks the link between the child list and its previous node in the main list by setting the next pointer of the previous node to NULL.
+curNode->child->prev = NULL;: This breaks the reverse link, detaching the child list from the main list.
+After separating the child list, the function calls itself recursively on the child list (exploreAndSeparate(curNode->child)), ensuring the child list itself is properly separated if it has further nested child lists.
+Then, it moves to the next node in the main list (curNode = curNode->next).
+Key Concept: Recursion is used here to handle lists that have multiple levels of nested child lists. Each level is processed separately.
+
+Detailed Explanation
+Line-by-Line for unflattenList
+cpp
+코드 복사
+void unflattenList(Node *start, Node **tail) {
+    Node *curNode;
+Node *start: This is the starting node of the list (typically the head).
+Node **tail: This is a pointer to the pointer of the tail node, which will be updated by the function.
+Node *curNode: A temporary pointer used to traverse the list.
+cpp
+코드 복사
+    exploreAndSeparate(start);
+This line calls the recursive function exploreAndSeparate starting from the head (start) of the list to begin unflattening.
+cpp
+코드 복사
+    for (curNode = start; curNode->next; curNode = curNode->next)
+        ; // Move to the end of the list
+A for loop is used to traverse the list from the start node. The loop moves the curNode pointer to the next node until it reaches the end (where curNode->next is NULL).
+This loop is finding the last node (the tail), which will be used to update the tail pointer.
+cpp
+코드 복사
+    *tail = curNode;
+}
+Once the loop finishes, curNode will point to the last node (tail of the list). We update the tail to this node using *tail = curNode;.
+Line-by-Line for exploreAndSeparate
+cpp
+코드 복사
+void exploreAndSeparate(Node *childListStart) {
+    Node *curNode = childListStart;
+Node *curNode: This pointer starts at childListStart and will be used to traverse the list.
+cpp
+코드 복사
+    while (curNode) {
+A while loop is used to traverse the list, node by node, starting from childListStart until it reaches the end of the list (curNode == NULL).
+cpp
+코드 복사
+        if (curNode->child) {
+If the current node (curNode) has a child list (i.e., curNode->child is not NULL), it needs to be separated from the main list.
+cpp
+코드 복사
+            if (curNode->child->prev) {
+                curNode->child->prev->next = NULL; // Break the link
+                curNode->child->prev = NULL;       // Detach from the parent list
+            }
+This block ensures that the child list is separated from the main list:
+curNode->child->prev->next = NULL;: This breaks the link between the parent list and the child list by setting the next pointer of the node before the child to NULL.
+curNode->child->prev = NULL;: This detaches the child list from its parent by setting its prev pointer to NULL.
+cpp
+코드 복사
+            exploreAndSeparate(curNode->child);
+After separating the child list, the function calls itself recursively on the child list (curNode->child) to continue separating any nested child lists.
+cpp
+코드 복사
+        curNode = curNode->next;
+    }
+}
+The loop moves the curNode pointer to the next node and continues until the entire list has been processed.
+Summary:
+unflattenList: Starts the unflattening process and updates the tail pointer.
+exploreAndSeparate: Recursively explores each node, separating child lists from the main list.
